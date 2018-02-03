@@ -154,6 +154,25 @@ func (y *Yeelight) StopCf() string {
 	return y.request(cmd)
 }
 
+// StartMusic method is used to start a music mode. 
+// When control device wants to start music mode, it needs start a TCP
+// server firstly and then call “set_music” command to let the device know the IP and Port of the
+// TCP listen socket. After received the command, LED device will try to connect the specified
+// peer address. If the TCP connection can be established successfully, then control device could
+// send all supported commands through this channel without limit to simulate any music effect.
+// The control device can stop music mode by explicitly send a stop command or just by closing
+// the socket.
+func (y *Yeelight) StartMusic(host string, port string) string {
+	cmd := `{"id":1,"method":"set_music","params":[1,"` + host + `","` + port + `"]}`
+	return y.request(cmd)
+}
+
+// StopMusic method is used to stop music mode, it can be used instead of socket close.
+func (y *Yeelight) StopMusic() string {
+	cmd := `{"id":1,"method":"set_music","params":[0]}`
+	return y.request(cmd)
+}
+
 // SetScene method is used to set the smart LED directly to specified state.
 // If the smart LED is off, then it will turn on the smart LED firstly and then
 // apply the specified command.
